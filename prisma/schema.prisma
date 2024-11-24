@@ -1,0 +1,64 @@
+// prisma/schema.prisma
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Hospital {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  coords       Coordinates
+  availability Int
+  routes       Route[]
+}
+
+model Route {
+  id                String        @id @default(auto()) @map("_id") @db.ObjectId
+  ambulanceLocation Coordinates
+  bestHospitalId    String        @db.ObjectId
+  bestHospital      Hospital      @relation(fields: [bestHospitalId], references: [id])
+  routeCoordinates  Coordinates[]
+  createdAt         DateTime      @default(now())
+}
+
+type Coordinates {
+  latitude  Float
+  longitude Float
+}
+
+model Signal {
+  id        String          @id @default(auto()) @map("_id") @db.ObjectId
+  index     Int             @unique
+  latitude  Float
+  longitude Float
+  status    String          // 'red' or 'green'
+  requests  SignalRequest[] @relation("SignalRequests")
+}
+
+model SignalRequest {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  signal    Signal   @relation(fields: [signalId], references: [id], name: "SignalRequests")
+  signalId  String   @db.ObjectId
+  status    String   // 'pending' or 'accepted'
+  createdAt DateTime @default(now())
+}
+
+model Emergency {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  condition   String
+  injuryType  String
+  severity    String
+  vitals      Vitals
+  createdAt   DateTime @default(now())
+}
+
+type Vitals {
+  heartRate Int
+  bloodPressure String
+  temperature Float
+}
