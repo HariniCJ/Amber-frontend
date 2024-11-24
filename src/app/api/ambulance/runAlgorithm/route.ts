@@ -15,13 +15,16 @@ export async function POST(request: Request) {
     }
 
     // Send request to Flask app
-    const response = await fetch("http://127.0.0.1:5001/run-algorithm", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ latitude, longitude }),
-    });
+    const response = await fetch(
+      "https://amber-backend-qt95.onrender.com/run-algorithm",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ latitude, longitude }),
+      }
+    );
 
     const result = await response.json();
 
