@@ -30,9 +30,9 @@ export default function EmergencyForm() {
       !condition ||
       !injuryType ||
       !severity ||
-      !vitals.heartRate ||
+      vitals.heartRate === 0 ||
       !vitals.bloodPressure ||
-      !vitals.temperature
+      vitals.temperature === 0
     ) {
       setSubmissionStatus("Please fill in all fields.");
       return;
@@ -91,9 +91,11 @@ export default function EmergencyForm() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md mt-8">
-      <h2 className="text-2xl font-semibold mb-4">Report Patient Emergency</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="bg-white p-6 rounded-lg shadow-md mt-8 border border-black">
+      <h2 className="text-2xl font-semibold mb-4 text-black">
+        Report Patient Emergency
+      </h2>
+      <form onSubmit={handleSubmit} className="space-y-6">
         {/* Condition */}
         <div>
           <label
@@ -108,7 +110,7 @@ export default function EmergencyForm() {
             rows={3}
             value={condition}
             onChange={(e) => setCondition(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border border-gray-500 shadow-sm focus:border-black focus:ring-black"
             placeholder="Describe the patient's condition"
             required
           ></textarea>
@@ -128,7 +130,7 @@ export default function EmergencyForm() {
             name="injuryType"
             value={injuryType}
             onChange={(e) => setInjuryType(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border border-gray-500 shadow-sm focus:border-black focus:ring-black"
             placeholder="e.g., Fracture, Burn, etc."
             required
           />
@@ -147,7 +149,7 @@ export default function EmergencyForm() {
             name="severity"
             value={severity}
             onChange={(e) => setSeverity(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border border-gray-500 shadow-sm focus:border-black focus:ring-black"
             required
           >
             <option value="">-- Select Severity --</option>
@@ -175,9 +177,11 @@ export default function EmergencyForm() {
                 name="heartRate"
                 value={vitals.heartRate}
                 onChange={handleVitalsChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border border-gray-500 shadow-sm focus:border-black focus:ring-black"
                 placeholder="e.g., 72"
                 required
+                min="30"
+                max="200"
               />
             </div>
 
@@ -200,7 +204,7 @@ export default function EmergencyForm() {
                     bloodPressure: e.target.value,
                   }))
                 }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border border-gray-500 shadow-sm focus:border-black focus:ring-black"
                 placeholder="e.g., 120/80"
                 required
               />
@@ -221,9 +225,11 @@ export default function EmergencyForm() {
                 name="temperature"
                 value={vitals.temperature}
                 onChange={handleVitalsChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border border-gray-500 shadow-sm focus:border-black focus:ring-black"
                 placeholder="e.g., 36.6"
                 required
+                min="30"
+                max="45"
               />
             </div>
           </div>
@@ -250,8 +256,8 @@ export default function EmergencyForm() {
             type="submit"
             disabled={isSubmitting}
             className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-              isSubmitting ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
-            } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+              isSubmitting ? "bg-gray-400" : "bg-black hover:bg-gray-800"
+            } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black`}
           >
             {isSubmitting ? "Submitting..." : "Submit Emergency"}
           </button>
