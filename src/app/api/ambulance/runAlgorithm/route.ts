@@ -1,14 +1,18 @@
 // app/api/ambulance/runAlgorithm/route.ts
-
 import { NextResponse } from "next/server";
 
-export async function POST() {
+export async function POST(request: Request) {
   try {
-    // Static latitude and longitude values
-    const data = {
-      latitude: 12.893943,
-      longitude: 77.674585,
-    };
+    const requestData = await request.json();
+    const { latitude, longitude } = requestData;
+
+    // Validate coordinates
+    if (typeof latitude !== "number" || typeof longitude !== "number") {
+      return NextResponse.json(
+        { status: "error", error: "Invalid coordinates" },
+        { status: 400 }
+      );
+    }
 
     // Send request to Flask app
     const response = await fetch("http://127.0.0.1:5001/run-algorithm", {
@@ -16,7 +20,7 @@ export async function POST() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ latitude, longitude }),
     });
 
     const result = await response.json();
@@ -25,6 +29,8 @@ export async function POST() {
       return NextResponse.json({
         status: "success",
         message: result.message,
+        hospitals: result.hospitals, // Forward hospitals data
+        bestHospital: result.bestHospital,
       });
     } else {
       return NextResponse.json(

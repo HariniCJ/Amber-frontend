@@ -1,36 +1,11 @@
+// src/app/ambulance/MapComponent.tsx
+
 "use client";
 
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-
-interface Coordinates {
-  latitude: number;
-  longitude: number;
-}
-
-interface Hospital {
-  id: string;
-  name: string;
-  coords: Coordinates;
-  availability: number;
-}
-
-interface RouteData {
-  id: string;
-  ambulanceLocation: Coordinates;
-  bestHospitalId: string;
-  bestHospital: Hospital;
-  routeCoordinates: Coordinates[];
-  createdAt: string;
-}
-
-interface Signal {
-  index: number;
-  latitude: number;
-  longitude: number;
-  status: string; // 'red' or 'green'
-}
+import { RouteData, Signal } from "./types";
 
 interface MapComponentProps {
   route: RouteData;
@@ -90,7 +65,7 @@ export default function MapComponent({
       ]);
     }
 
-    // Add hospital marker
+    // Add best hospital marker
     const hospitalIcon = L.icon({
       iconUrl: "/images/hospital.png",
       iconSize: [60, 60],
@@ -101,7 +76,7 @@ export default function MapComponent({
       icon: hospitalIcon,
     })
       .addTo(map!)
-      .bindPopup("Best Hospital");
+      .bindPopup(`Best Hospital: ${bestHospital.name}`);
 
     // Update or add route polyline
     const latLngs = routeCoordinates.map((coord) => [
@@ -127,7 +102,7 @@ export default function MapComponent({
         routeCoordinates[Math.floor((2 * routeCoordinates.length) / 3)],
       ];
 
-      const initialSignals = signalPoints.map((point, idx) => ({
+      const initialSignals: Signal[] = signalPoints.map((point, idx) => ({
         index: idx, // Ensure index is a number starting from 0
         latitude: point.latitude,
         longitude: point.longitude,
